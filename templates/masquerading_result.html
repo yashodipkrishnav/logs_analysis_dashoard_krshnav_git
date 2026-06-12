@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+
+```
+<div class="card-header">
+    <h3 class="card-title">Masquerading Validation</h3>
+</div>
+
+<div class="card-body">
+
+    <h4>Domain</h4>
+    <p>{{ domain }}</p>
+
+    <h4>SMTP Host</h4>
+    <p>{{ smtp_host }}</p>
+
+    <h4>SPF Status</h4>
+
+    {% if spf_valid %}
+        <span class="badge badge-success">PASS</span>
+    {% else %}
+        <span class="badge badge-danger">FAIL</span>
+    {% endif %}
+
+    <hr>
+
+    <h4>Available Mailboxes</h4>
+
+    <ul>
+    {% for mailbox in mailboxes %}
+        <li>{{ mailbox }}</li>
+    {% endfor %}
+    </ul>
+
+    <hr>
+
+    <h4>Addressowner Map</h4>
+
+    <pre>{{ addressowner_result }}</pre>
+
+    {% if option_type == "relay" %}
+
+        <hr>
+
+        <h4>Relay Map</h4>
+
+        <pre>{{ relay_result }}</pre>
+
+        <hr>
+
+        <h4>SASL Password</h4>
+
+        <pre>{{ sasl_result }}</pre>
+
+    {% endif %}
+
+</div>
+```
+
+</div>
+
+{% endblock %}
+

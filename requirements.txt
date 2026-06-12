@@ -1,2 +1,4 @@
 flask
 paramiko
+ldap3
+dnspython
