@@ -1,0 +1,41 @@
+from flask import Flask, render_template, request, jsonify
+from analyzer.log_analyzer import run_log_analyzer
+
+app = Flask(__name__)
+
+@app.route("/")
+def dashboard():
+    return render_template("dashboard.html")
+
+
+@app.route("/run", methods=["POST"])
+def run():
+    try:
+        data = request.json
+
+        hosts = data.get("hosts")
+        user = data.get("user")
+        search = data.get("search")
+        date = data.get("date")
+        time_range = data.get("time_range")
+        limit = int(data.get("limit", 5))
+        password = data.get("password")
+
+        output = run_log_analyzer(
+            hosts=hosts,
+            user=user,
+            search=search,
+            date=date,
+            time_range=time_range,
+            limit=limit,
+            password=password
+        )
+
+        return jsonify({"result": output})
+
+    except Exception as e:
+        return jsonify({"result": f"ERROR: {str(e)}"})
+
+
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=5000, debug=True)
