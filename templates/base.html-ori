@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>MailOps Portal</title>
+    <link rel="stylesheet" href="/static/adminlte/dist/css/adminlte.min.css">
+<!--    <script src="/static/adminlte/plugins/jquery/jquery.min.js"></script>
+    <script src="/static/adminlte/dist/js/adminlte.min.js"></script> -->
+</head>
+
+<body class="hold-transition sidebar-mini">
+<div class="wrapper">
+
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <span class="navbar-brand">📊 Log Analyzer</span>
+<ul class="navbar-nav ml-auto">
+    <li class="nav-item">
+        <span class="nav-link">👤 {{ session.user }}</span>
+    </li>
+    <li class="nav-item">
+        <a href="/logout" class="nav-link text-danger">Logout</a>
+    </li>
+</ul>
+</nav>
+
+<div class="content-wrapper p-4">
+    {% block content %}{% endblock %}
+</div>
+
+</div>
+
+<script src="/static/adminlte/plugins/jquery/jquery.min.js"></script>
+<script src="/static/adminlte/dist/js/adminlte.min.js"></script>
+
+</body>
+</html>

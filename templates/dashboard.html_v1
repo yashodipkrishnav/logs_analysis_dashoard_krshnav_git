@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Run Log Analysis</h3>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-4">
+                <input id="hosts" class="form-control" placeholder="Hosts">
+            </div>
+
+            <div class="col-md-2">
+                <input id="user" class="form-control" value="kbhosale">
+            </div>
+
+            <div class="col-md-3">
+                <input id="search" class="form-control" placeholder="Search">
+            </div>
+
+            <div class="col-md-3">
+                <input id="date" class="form-control" placeholder="YYYY-MM-DD">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-md-3">
+                <input id="time_range" class="form-control" placeholder="HH:MM-HH:MM">
+            </div>
+
+            <div class="col-md-2">
+                <input id="limit" class="form-control" value="5">
+            </div>
+
+            <div class="col-md-3">
+                <input id="password" type="password" class="form-control" placeholder="Password">
+            </div>
+
+            <div class="col-md-2">
+                <button onclick="runAnalyzer()" class="btn btn-primary">Run</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Results</div>
+    <div class="card-body">
+        <pre id="output" style="height:400px;overflow:auto;background:black;color:lime;"></pre>
+    </div>
+</div>
+
+<script>
+function runAnalyzer() {
+
+    $("#output").text("Running... please wait ⏳");
+
+    $.ajax({
+        url: "/run",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            hosts: $("#hosts").val(),
+            user: $("#user").val(),
+            search: $("#search").val(),
+            date: $("#date").val(),
+            time_range: $("#time_range").val(),
+            limit: $("#limit").val(),
+            password: $("#password").val()
+        }),
+        success: function(res) {
+            $("#output").text(res.result);
+        },
+        error: function() {
+            $("#output").text("Error occurred");
+        }
+    });
+}
+</script>
+
+{% endblock %}

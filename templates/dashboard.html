@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Run Log Analysis</h3>
+    </div>
+
+    <div class="card-body">
+
+        <div class="row">
+            <div class="col-md-4">
+                <input id="hosts" class="form-control" placeholder="Hosts">
+            </div>
+
+            <div class="col-md-3">
+                <input id="search" class="form-control" placeholder="Search">
+            </div>
+
+            <div class="col-md-3">
+                <input id="date" class="form-control" placeholder="YYYY-MM-DD">
+            </div>
+        </div>
+
+        <br>
+
+        <div class="row">
+            <div class="col-md-3">
+                <input id="time_range" class="form-control" placeholder="HH:MM-HH:MM">
+            </div>
+
+            <div class="col-md-2">
+<!--                <button onclick="runAnalyzer()" class="btn btn-primary">Run</button> -->
+                 <button id="runBtn" onclick="runAnalyzer()" class="btn btn-primary">Run</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="card">
+    <div class="card-header">Results</div>
+    <div class="card-body">
+	<div id="output" style="
+		height:400px;
+		overflow:auto;
+		background:black;
+		color:lime;
+		padding:10px;
+		font-family: monospace;
+	"></div>
+    </div>
+</div>
+
+<script>
+function runAnalyzer() {
+
+
+    $("#runBtn").prop("disabled", true);   // disable button
+    $("#output").text("🔄 Connecting to servers...\n");
+    $("#output").html("");
+
+    $.ajax({
+        url: "/run",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            hosts: $("#hosts").val(),
+            search: $("#search").val(),
+            date: $("#date").val(),
+            time_range: $("#time_range").val(),
+        }),
+
+        beforeSend: function() {
+            $("#output").text("🚀 Starting log analysis...\n");
+        },
+
+        success: function(res) {
+            $("#runBtn").prop("disabled", false);  // enable again
+
+            if (!res.result || res.result.trim() === "") {
+                $("#output").text("⚠️ No output returned");
+            } else {
+                $("#output").html(res.result.replace(/\n/g, "<br>"));
+            }
+        },
+
+        error: function() {
+            $("#output").text("❌ Error occurred");
+        }
+    });
+}
+</script>
+
+<script>
+function getQueue(host, qid) {
+
+    // Prevent multiple clicks
+    if ($("#" + qid).length) {
+        return;
+    }
+
+    $("#output").append("<br>⏳ Fetching logs for " + qid + "...<br>");
+
+    $.ajax({
+        url: "/queue",
+        method: "POST",
+        contentType: "application/json",
+        data: JSON.stringify({
+            host: host,
+            qid: qid,
+            search: $("#search").val(),
+            date: $("#date").val()
+        }),
+        success: function(res) {
+            $("#output").append(
+                '<pre id="' + qid + '">' +
+                $('<div>').text(res.result).html() +
+                '</pre>'
+            );
+        },
+        error: function() {
+            $("#output").append("\n❌ Failed to fetch queue logs\n");
+        }
+    });
+}
+</script>
+
+{% endblock %}
